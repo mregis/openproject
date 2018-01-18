@@ -1,5 +1,4 @@
 #-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is a project management system.
 # Copyright (C) 2012-2017 the OpenProject Foundation (OPF)
@@ -28,20 +27,32 @@
 # See doc/COPYRIGHT.rdoc for more details.
 #++
 
-class Queries::WorkPackages::Filter::WorkPackageFilter < ::Queries::Filters::Base
-  include ::Queries::Filters::Serializable
-
-  self.model = WorkPackage
-
-  def human_name
-    WorkPackage.human_attribute_name(name)
+class Queries::WorkPackages::Filter::AttachmentContentFilter < Queries::WorkPackages::Filter::WorkPackageFilter
+  def type
+    :text
   end
 
-  def project
-    context.project
+  def self.key
+    :attachment_content
+  end
+
+  def name
+    :attachment_content
+  end
+
+  def human_name
+    I18n.t('label_attachment_content')
   end
 
   def includes
-    nil
+    :attachments
+  end
+
+  def where
+    operator_strategy.sql_for_field(values, 'attachments', 'fulltext')
+  end
+
+  def order
+    8
   end
 end
