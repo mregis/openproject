@@ -81,5 +81,12 @@ module OpenProject
         raw ? version : version.match(/\APostgreSQL (\S+)/i)[1]
       end
     end
+
+    # Return if the version of the underlying database engine is capable of TSVECTOR features, needed for full-text
+    # search.
+    def self.allows_tsv?
+      OpenProject::Database.name == :postgresql &&
+        Gem::Version.new(OpenProject::Database.version) >= Gem::Version.new('9.6')
+    end
   end
 end
